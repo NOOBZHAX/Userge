@@ -110,7 +110,7 @@ async def ytDown(message: Message):
             retcode = await _tubeDl(
                 [message.filtered_input_str], __progress, startTime, desiredFormat)
         elif 'v' in message.flags:
-            desiredFormat = desiredFormat2 + '+bestaudio'
+            desiredFormat = f'{desiredFormat2}+bestaudio'
             retcode = await _tubeDl(
                 [message.filtered_input_str], __progress, startTime, desiredFormat)
         else:
@@ -199,7 +199,7 @@ def _tubeDl(url: list, prog, starttime, uid=None):
              'postprocessors': [
                  {'key': 'FFmpegMetadata'}]}
     _quality = {'format': 'bestvideo+bestaudio/best' if not uid else str(uid)}
-    _opts.update(_quality)
+    _opts |= _quality
     try:
         x = ytdl.YoutubeDL(_opts)
         x.add_progress_hook(prog)

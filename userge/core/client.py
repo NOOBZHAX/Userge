@@ -49,9 +49,7 @@ async def _set_running(is_running: bool) -> None:
 
 async def _is_running() -> bool:
     data = await _USERGE_STATUS.find_one({'_id': 'USERGE_STATUS'})
-    if data:
-        return bool(data['is_running'])
-    return False
+    return bool(data['is_running']) if data else False
 
 
 async def _complete_init_tasks() -> None:
@@ -64,16 +62,12 @@ async def _complete_init_tasks() -> None:
 class _AbstractUserge(Methods, RawClient):
     @property
     def id(self) -> int:
-        if self.is_bot:
-            return RawClient.BOT_ID
-        return RawClient.USER_ID
+        return RawClient.BOT_ID if self.is_bot else RawClient.USER_ID
 
     @property
     def is_bot(self) -> bool:
         """ returns client is bot or not """
-        if self._bot is not None:
-            return hasattr(self, 'ubot')
-        return bool(Config.BOT_TOKEN)
+        return bool(Config.BOT_TOKEN) if self._bot is None else hasattr(self, 'ubot')
 
     @property
     def uptime(self) -> str:
